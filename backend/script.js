@@ -97,7 +97,7 @@ app.get('/top-tracks', async (req, res) => {
   if (!token) return res.status(401).send('No token proporcionado');
 
   try {
-    const response = await axios.get('https://api.spotify.com/v1/me/top/tracks', {
+    const response = await axios.get('https://api.spotify.com/v1/me/top/tracks?time_range=short_term&limit=10', {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -119,7 +119,8 @@ app.get('/top-artists', async (req, res) => {
   if (!token) return res.status(401).send('No token proporcionado');
 
   try {
-    const response = await axios.get('https://api.spotify.com/v1/me/top/artists', {
+    const response = await axios.get('https://api.spotify.com/v1/me/top/artists?time_range=short_term&limit=10'
+, {
       headers: {
         Authorization: `Bearer ${token}`
       }
