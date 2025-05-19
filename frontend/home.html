@@ -11,8 +11,9 @@
     <header>
         <h1>Welcome to your <span style="color: #1DB954;" >Spotify</span> Wrapped!</h1>
     </header>
-
+    <h3>Short Term</h3>
     <div class="content">
+
         <div class="top-artists">
             <h3>Top artists</h3>
         </div>
@@ -20,10 +21,18 @@
         <div class="top-songs">
             <h3>Top songs</h3>
         </div>
+    </div>
 
+    <h3>Medium Term</h3>
+    <div class="content">
 
+        <div class="top-artists-med">
+            <h3>Top artists</h3>
+        </div>
 
-
+        <div class="top-songs-med">
+            <h3>Top songs</h3>
+        </div>
     </div>
 
     <footer>
@@ -42,9 +51,9 @@
         const token = getAccessTokenFromUrl();
 
         // Luego haces la llamada al backend pasando ese token
-        async function obtenerTopTracks() {
+        async function obtenerTopTracksShort() {
             try {
-                const res = await fetch(`http://localhost:3000/top-tracks?access_token=${token}`);
+                const res = await fetch(`http://localhost:3000/top-tracks-short?access_token=${token}`);
                 if (!res.ok) throw new Error('Error en la petición');
 
                 const data = await res.json();
@@ -67,9 +76,9 @@
             }
         }
 
-        async function obtenerTopArtists() {
+        async function obtenerTopArtistsShort() {
             try {
-                const res = await fetch(`http://localhost:3000/top-artists?access_token=${token}`);
+                const res = await fetch(`http://localhost:3000/top-artists-short?access_token=${token}`);
                 if (!res.ok) throw new Error('Error en la petición');
 
                 const data = await res.json();
@@ -88,9 +97,56 @@
             }
         }
 
-        obtenerTopTracks();
-        obtenerTopArtists();
+        async function obtenerTopTracksMedium() {
+            try {
+                const res = await fetch(`http://localhost:3000/top-tracks-med?access_token=${token}`);
+                if (!res.ok) throw new Error('Error en la petición');
 
+                const data = await res.json();
+                console.log('Top tracks:', data);
+
+                const topSongsDiv = document.querySelector('.top-songs-med');
+
+                topSongsDiv.innterHTML = '<h3>Top Songs</h3>';
+                data.items.forEach(track => {
+                    const trackElement = document.createElement('p');
+                    const artist = track.artists.map(artist => artist.name).join(', ');
+                    trackElement.textContent = `${track.name} - ${artist}`;
+                    topSongsDiv.appendChild(trackElement);
+                })
+
+                
+                
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function obtenerTopArtistsMed() {
+            try {
+                const res = await fetch(`http://localhost:3000/top-artists-med?access_token=${token}`);
+                if (!res.ok) throw new Error('Error en la petición');
+
+                const data = await res.json();
+                console.log('Top artists:', data);
+
+                const topArtistsDiv = document.querySelector('.top-artists-med');
+
+                data.items.forEach(artist => {
+                    const artistElement = document.createElement('p');
+                    artistElement.textContent = artist.name;
+                    topArtistsDiv.appendChild(artistElement);
+                })
+
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        obtenerTopTracksShort();
+        obtenerTopArtistsShort();
+        obtenerTopTracksMedium();
+        obtenerTopArtistsMed();
     </script>
 </body>
 </html>
