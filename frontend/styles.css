@@ -48,3 +48,17 @@ p{
 h3{
     text-align: center;;
 }
+
+h1{
+    text-align: center;
+}
+
+body{
+    text-align: center;
+}
+
+.link{
+    cursor: pointer;
+    text-decoration: none;
+    color: #fff;
+}
