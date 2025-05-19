@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Spotify Wrapped</title>
+</head>
+<body>
+
+    <header>
+        <h1>Welcome to your <span style="color: #1DB954;" >Spotify</span> Wrapped!</h1>
+    </header>
+
+    <div class="content">
+
+        <div class="top-artists">
+            <h3>Top artists</h3>
+        </div>
+
+        <div class="top-songs">
+            <h3>Top songs</h3>
+        </div>
+
+
+
+    </div>
+
+    <footer>
+        <address>
+        Written by <a href="https://github.com/joseenriquez1404">José Enríquez</a>.<br>
+        </address>
+    </footer>
+
+    <script>// Obtener access_token de la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const accessToken = urlParams.get('access_token');
+
+        if (accessToken) {
+        console.log('Token recibido:', accessToken);
+        // Aquí puedes guardar el token o hacer peticiones a tu backend
+        } else {
+            console.log('No se recibió token');
+        }
+
+        // Extraer token del query param (ejemplo en home.html)
+        function getAccessTokenFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('access_token');
+        }
+
+        const token = getAccessTokenFromUrl();
+
+        // Luego haces la llamada al backend pasando ese token
+        async function obtenerTopTracks() {
+            try {
+                const res = await fetch(`http://localhost:3000/top-tracks?access_token=${token}`);
+                if (!res.ok) throw new Error('Error en la petición');
+
+                const data = await res.json();
+                console.log('Top tracks:', data);
+
+                const topSongsDiv = document.querySelector('.top-songs');
+
+                topSongsDiv.innterHTML = '<h3>Top Songs</h3>';
+                data.items.forEach(track => {
+                    const trackElement = document.createElement('p');
+                    const artist = track.artists.map(artist => artist.name).join(', ');
+                    trackElement.textContent = `${track.name} - ${artist}`;
+                    topSongsDiv.appendChild(trackElement);
+                })
+
+                
+                
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function obtenerTopArtists() {
+            try {
+                const res = await fetch(`http://localhost:3000/top-artists?access_token=${token}`);
+                if (!res.ok) throw new Error('Error en la petición');
+
+                const data = await res.json();
+                console.log('Top artists:', data);
+
+                const topArtistsDiv = document.querySelector('.top-artists');
+
+                data.items.forEach(artist => {
+                    const artistElement = document.createElement('p');
+                    artistElement.textContent = artist.name;
+                    topArtistsDiv.appendChild(artistElement);
+                })
+
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        obtenerTopTracks();
+        obtenerTopArtists();
+
+    </script>
+</body>
+</html>

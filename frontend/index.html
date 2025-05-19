@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Spotify Login</title>
+</head>
+<body>
+  <h1>Iniciar sesión con Spotify</h1>
+  <a href="http://localhost:3000/login">Login con Spotify</a>
+
+  <div id="tracks"></div>
+
+  <script>
+    // Obtener el token desde la URL si existe
+    const urlParams = new URLSearchParams(window.location.search);
+    const accessToken = urlParams.get('access_token');
+
+    if (accessToken) {
+      // Usar el token para obtener las canciones más escuchadas
+      fetch('https://api.spotify.com/v1/me/top/tracks?limit=10', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      })
+      .then(res => res.json())
+      .then(data => {
+        const container = document.getElementById('tracks');
+        data.items.forEach(track => {
+          const el = document.createElement('p');
+          el.textContent = `${track.name} - ${track.artists.map(a => a.name).join(', ')}`;
+          container.appendChild(el);
+        });
+      })
+      .catch(err => console.error('Error al obtener top tracks:', err));
+    }
+  </script>
+</body>
+</html>
