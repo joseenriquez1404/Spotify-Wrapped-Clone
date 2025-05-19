@@ -33,16 +33,6 @@
     </footer>
 
     <script>// Obtener access_token de la URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const accessToken = urlParams.get('access_token');
-
-        if (accessToken) {
-        console.log('Token recibido:', accessToken);
-        // Aquí puedes guardar el token o hacer peticiones a tu backend
-        } else {
-            console.log('No se recibió token');
-        }
-
         // Extraer token del query param (ejemplo en home.html)
         function getAccessTokenFromUrl() {
             const params = new URLSearchParams(window.location.search);
