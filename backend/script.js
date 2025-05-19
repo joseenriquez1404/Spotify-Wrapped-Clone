@@ -89,8 +89,8 @@ const ensureTokenValid = async () => {
   }
 };
 
-// Obtener las canciones más escuchadas del usuario
-app.get('/top-tracks', async (req, res) => {
+// Obtener las canciones más escuchadas del usuario del short term
+app.get('/top-tracks-short', async (req, res) => {
   const token = req.headers.authorization?.split(' ')[1] || req.query.access_token;
   console.log('Token recibido en backend:', token);
 
@@ -111,8 +111,8 @@ app.get('/top-tracks', async (req, res) => {
   }
 });
 
-// Obtener los artistas más escuchados del usuario
-app.get('/top-artists', async (req, res) => {
+// Obtener los artistas más escuchados del usuario del short term
+app.get('/top-artists-short', async (req, res) => {
   const token = req.headers.authorization?.split(' ')[1] || req.query.access_token;
   console.log('Token recibido en backend:', token);
 
@@ -133,6 +133,53 @@ app.get('/top-artists', async (req, res) => {
     res.status(500).send('Error al obtener los artistas más escuchados');
   }
 });
+
+
+// Obtener las canciones más escuchadas del usuario del medium term
+app.get('/top-tracks-med', async (req, res) => {
+  const token = req.headers.authorization?.split(' ')[1] || req.query.access_token;
+  console.log('Token recibido en backend:', token);
+
+  if (!token) return res.status(401).send('No token proporcionado');
+
+  try {
+    const response = await axios.get('https://api.spotify.com/v1/me/top/tracks?limit=10&time_range=medium_term', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    res.json(response.data);
+    console.log('Canciones más escuchadas obtenidas:', response.data);
+  } catch (err) {
+    console.error('Error en /top-tracks:', err.response?.data || err.message);
+    res.status(500).send('Error al obtener las canciones más escuchadas');
+  }
+});
+
+// Obtener los artistas más escuchados del usuario del medium term
+app.get('/top-artists-med', async (req, res) => {
+  const token = req.headers.authorization?.split(' ')[1] || req.query.access_token;
+  console.log('Token recibido en backend:', token);
+
+  if (!token) return res.status(401).send('No token proporcionado');
+
+  try {
+    const response = await axios.get('https://api.spotify.com/v1/me/top/artists?time_range=medium_term&limit=10', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+
+    res.json(response.data);
+    console.log('Artistas más escuchados obtenidos:', response.data);
+  } catch (err) {
+    console.error('Error en /top-artist:', err.response?.data || err.message);
+    res.status(500).send('Error al obtener los artistas más escuchados');
+  }
+});
+
 
 
 
