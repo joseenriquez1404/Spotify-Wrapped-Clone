@@ -10,6 +10,7 @@
 
     <header>
         <h1>Welcome to your <span style="color: #1DB954;" >Spotify</span> Wrapped!</h1>
+        <h3 class = "weather-text">Weather: </h3>
     </header>
     <h3>Short Term</h3>
     <div class="content">
@@ -41,7 +42,18 @@
         </address>
     </footer>
 
-    <script>// Obtener access_token de la URL
+    <script>
+        let latitude = 0;
+        let longitude = 0;
+        let city = '';
+
+        const options = {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0,
+        }
+
+        // Obtener access_token de la URL
         // Extraer token del query param (ejemplo en home.html)
         function getAccessTokenFromUrl() {
             const params = new URLSearchParams(window.location.search);
@@ -49,7 +61,6 @@
         }
 
         const token = getAccessTokenFromUrl();
-
         // Luego haces la llamada al backend pasando ese token
         async function obtenerTopTracksShort() {
             try {
@@ -61,7 +72,7 @@
 
                 const topSongsDiv = document.querySelector('.top-songs');
 
-                topSongsDiv.innterHTML = '<h3>Top Songs</h3>';
+                topSongsDiv.innerHTML = '<h3>Top Songs</h3>';
                 data.items.forEach(track => {
                     const trackElement = document.createElement('p');
                     const artist = track.artists.map(artist => artist.name).join(', ');
@@ -107,7 +118,7 @@
 
                 const topSongsDiv = document.querySelector('.top-songs-med');
 
-                topSongsDiv.innterHTML = '<h3>Top Songs</h3>';
+                topSongsDiv.innerHTML = '<h3>Top Songs</h3>';
                 data.items.forEach(track => {
                     const trackElement = document.createElement('p');
                     const artist = track.artists.map(artist => artist.name).join(', ');
@@ -143,10 +154,54 @@
             }
         }
 
+        
+
         obtenerTopTracksShort();
         obtenerTopArtistsShort();
         obtenerTopTracksMedium();
         obtenerTopArtistsMed();
+
+        // Get recommendations based on weather 
+        function getCoordinates(pos) {
+            const crd = pos.coords;
+            latitude = crd.latitude;
+            longitude = crd.longitude;
+            getCityFromCoordinates(latitude, longitude).then(cityName => {
+                city = cityName;
+                // console.log("Ciudad:", city);
+                getWeatherData(city).then(weatherData => {
+                    console.log("Datos del clima:", weatherData);
+                    const weatherText = document.querySelector('.weather-text');
+                    weatherText.textContent = `Weather: ${weatherData.current.condition["text"]}`;
+                });
+
+            });
+        }
+
+        function error(err){
+            console.warn(`ERROR(${err.code}): ${err.message}`);
+        }
+
+        async function getCityFromCoordinates(lat, lon) {
+            const response = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`);
+            const data = await response.json();
+            return data.city || data.locality || data.principalSubdivision || 'Unknown location';
+        }
+
+        // Function to fetch weather data based on city name
+        async function getWeatherData(city){
+            const response = await fetch(`http://localhost:3000/weather?city=${city}`);
+            const data = await response.json();
+            return data;
+        }
+
+        navigator.geolocation.getCurrentPosition(getCoordinates, error, options);
+
+
+
+
+        
+
     </script>
 </body>
 </html>
