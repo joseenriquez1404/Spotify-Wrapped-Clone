@@ -18,6 +18,15 @@ let tokenExpiresAt = 0;
 let userAccessToken = '';
 let userRefreshToken = '';
 
+// Get weather conditions from location
+app.get('/weather', async (req, res) => {
+  const city = req.query.city;
+  const response  = await fetch(`http://api.weatherapi.com/v1/current.json?key=${process.env.WEATHER_API_KEY}&q=${city}`);
+  const data = await response.json();
+  res.json(data);
+  return data;
+})
+
 // Sign in to Spotify to get user info
 app.get('/login', (req, res) => {
   const scope = 'user-top-read';
@@ -104,7 +113,7 @@ app.get('/top-tracks-short', async (req, res) => {
     });
 
     res.json(response.data);
-    console.log('Canciones más escuchadas obtenidas:', response.data);
+    //console.log('Canciones más escuchadas obtenidas:', response.data);
   } catch (err) {
     console.error('Error en /top-tracks:', err.response?.data || err.message);
     res.status(500).send('Error al obtener las canciones más escuchadas');
@@ -127,7 +136,7 @@ app.get('/top-artists-short', async (req, res) => {
     });
 
     res.json(response.data);
-    console.log('Artistas más escuchados obtenidos:', response.data);
+    //console.log('Artistas más escuchados obtenidos:', response.data);
   } catch (err) {
     console.error('Error en /top-artist:', err.response?.data || err.message);
     res.status(500).send('Error al obtener los artistas más escuchados');
@@ -150,7 +159,7 @@ app.get('/top-tracks-med', async (req, res) => {
     });
 
     res.json(response.data);
-    console.log('Canciones más escuchadas obtenidas:', response.data);
+    //console.log('Canciones más escuchadas obtenidas:', response.data);
   } catch (err) {
     console.error('Error en /top-tracks:', err.response?.data || err.message);
     res.status(500).send('Error al obtener las canciones más escuchadas');
@@ -173,7 +182,7 @@ app.get('/top-artists-med', async (req, res) => {
 
 
     res.json(response.data);
-    console.log('Artistas más escuchados obtenidos:', response.data);
+    //console.log('Artistas más escuchados obtenidos:', response.data);
   } catch (err) {
     console.error('Error en /top-artist:', err.response?.data || err.message);
     res.status(500).send('Error al obtener los artistas más escuchados');
