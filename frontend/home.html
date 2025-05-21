@@ -10,7 +10,11 @@
 
     <header>
         <h1>Welcome to your <span style="color: #1DB954;" >Spotify</span> Wrapped!</h1>
-        <h3 class = "weather-text">Weather: </h3>
+        <div class="weather">
+            <img src="" alt="" class="weather-icon">
+            <h3 class = "weather-text">Weather: </h3>
+        </div>
+
     </header>
     <h3>Short Term</h3>
     <div class="content">
@@ -172,7 +176,10 @@
                 getWeatherData(city).then(weatherData => {
                     console.log("Datos del clima:", weatherData);
                     const weatherText = document.querySelector('.weather-text');
+                    const weatherIcon = document.querySelector('.weather-icon');
                     weatherText.textContent = `Weather: ${weatherData.current.condition["text"]}`;
+                    weatherIcon.src = "https:" + weatherData.current.condition.icon;
+                    
                 });
 
             });
