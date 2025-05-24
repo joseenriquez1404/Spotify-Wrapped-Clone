@@ -19,11 +19,11 @@
     <h3>Short Term</h3>
     <div class="content">
 
-        <div class="top-artists">
+        <div class="artists-short">
             <h3>Top artists</h3>
         </div>
 
-        <div class="top-songs">
+        <div class="tracks-short">
             <h3>Top songs</h3>
         </div>
     </div>
@@ -31,11 +31,11 @@
     <h3>Medium Term</h3>
     <div class="content">
 
-        <div class="top-artists-med">
+        <div class="artists-medium">
             <h3>Top artists</h3>
         </div>
 
-        <div class="top-songs-med">
+        <div class="tracks-medium">
             <h3>Top songs</h3>
         </div>
     </div>
@@ -57,6 +57,8 @@
             maximumAge: 0,
         }
 
+        const optionsAPI = [["tracks", "short"], ["tracks", "medium"], ["artists", "short"], ["artists", "medium"]]
+
         // Obtener access_token de la URL
         // Extraer token del query param (ejemplo en home.html)
         function getAccessTokenFromUrl() {
@@ -66,104 +68,39 @@
 
         const token = getAccessTokenFromUrl();
         // Luego haces la llamada al backend pasando ese token
-        async function obtenerTopTracksShort() {
-            try {
-                const res = await fetch(`http://localhost:3000/top-tracks-short?access_token=${token}`);
-                if (!res.ok) throw new Error('Error en la petición');
+        async function getInformation(args) {
+            for(let i = 0; i < args.length; i++){
+                try {
+                    const [type, period] = args[i];
+                    const res = await fetch(`http://localhost:3000/${type}-${period}?access_token=${token}`);
+                    if (!res.ok) throw new Error('Error en la petición');
 
-                const data = await res.json();
-                console.log('Top tracks:', data);
+                    const data = await res.json();
+                    console.log(`Top ${type}:`, data);
 
-                const topSongsDiv = document.querySelector('.top-songs');
+                    const topDiv = document.querySelector(`.${type}-${period}`);
 
-                topSongsDiv.innerHTML = '<h3>Top Songs</h3>';
-                data.items.forEach(track => {
-                    const trackElement = document.createElement('p');
-                    const artist = track.artists.map(artist => artist.name).join(', ');
-                    trackElement.textContent = `${track.name} - ${artist}`;
-                    topSongsDiv.appendChild(trackElement);
-                })
+                    //topSongsDiv.innerHTML = '<h3>Top Songs</h3>';
+                    data.items.forEach(item => {
+                        const element = document.createElement('p');
+                        if (type === 'artists'){
+                            element.textContent = `${item.name}`;
+                        } else if (type === 'tracks'){
+                            const artist = item.artists.map(artist => artist.name).join(', ');
+                            element.textContent = `${item.name} - ${artist}`;
+                        }
+                        topDiv.appendChild(element);
+                    });
 
-                
-                
-            } catch (err) {
-                console.error(err);
+                    
+                    
+                } catch (err) {
+                    console.error(err);
+                }
             }
         }
 
-        async function obtenerTopArtistsShort() {
-            try {
-                const res = await fetch(`http://localhost:3000/top-artists-short?access_token=${token}`);
-                if (!res.ok) throw new Error('Error en la petición');
-
-                const data = await res.json();
-                console.log('Top artists:', data);
-
-                const topArtistsDiv = document.querySelector('.top-artists');
-
-                data.items.forEach(artist => {
-                    const artistElement = document.createElement('p');
-                    artistElement.textContent = artist.name;
-                    topArtistsDiv.appendChild(artistElement);
-                })
-
-            } catch (err) {
-                console.error(err);
-            }
-        }
-
-        async function obtenerTopTracksMedium() {
-            try {
-                const res = await fetch(`http://localhost:3000/top-tracks-med?access_token=${token}`);
-                if (!res.ok) throw new Error('Error en la petición');
-
-                const data = await res.json();
-                console.log('Top tracks:', data);
-
-                const topSongsDiv = document.querySelector('.top-songs-med');
-
-                topSongsDiv.innerHTML = '<h3>Top Songs</h3>';
-                data.items.forEach(track => {
-                    const trackElement = document.createElement('p');
-                    const artist = track.artists.map(artist => artist.name).join(', ');
-                    trackElement.textContent = `${track.name} - ${artist}`;
-                    topSongsDiv.appendChild(trackElement);
-                })
-
-                
-                
-            } catch (err) {
-                console.error(err);
-            }
-        }
-
-        async function obtenerTopArtistsMed() {
-            try {
-                const res = await fetch(`http://localhost:3000/top-artists-med?access_token=${token}`);
-                if (!res.ok) throw new Error('Error en la petición');
-
-                const data = await res.json();
-                console.log('Top artists:', data);
-
-                const topArtistsDiv = document.querySelector('.top-artists-med');
-
-                data.items.forEach(artist => {
-                    const artistElement = document.createElement('p');
-                    artistElement.textContent = artist.name;
-                    topArtistsDiv.appendChild(artistElement);
-                })
-
-            } catch (err) {
-                console.error(err);
-            }
-        }
-
-        
-
-        obtenerTopTracksShort();
-        obtenerTopArtistsShort();
-        obtenerTopTracksMedium();
-        obtenerTopArtistsMed();
+        getInformation(optionsAPI);
 
         // Get recommendations based on weather 
         function getCoordinates(pos) {

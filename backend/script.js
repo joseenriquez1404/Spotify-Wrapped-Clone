@@ -12,7 +12,6 @@ const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
 const credentials = Buffer.from(`${client_id}:${client_secret}`).toString('base64');
 const redirect_uri = process.env.REDIRECT_URI;
 
-
 let spotifyToken = '';
 let tokenExpiresAt = 0;
 let userAccessToken = '';
@@ -71,7 +70,6 @@ app.get('/callback', async (req, res) => {
 });
 
 
-
 const getToken = async () => {
   try {
     const res = await axios.post(
@@ -99,10 +97,9 @@ const ensureTokenValid = async () => {
 };
 
 // Obtener las canciones más escuchadas del usuario del short term
-app.get('/top-tracks-short', async (req, res) => {
+app.get('/tracks-short', async (req, res) => {
   const token = req.headers.authorization?.split(' ')[1] || req.query.access_token;
-  console.log('Token recibido en backend:', token);
-
+  
   if (!token) return res.status(401).send('No token proporcionado');
 
   try {
@@ -121,9 +118,9 @@ app.get('/top-tracks-short', async (req, res) => {
 });
 
 // Obtener los artistas más escuchados del usuario del short term
-app.get('/top-artists-short', async (req, res) => {
+app.get('/artists-short', async (req, res) => {
   const token = req.headers.authorization?.split(' ')[1] || req.query.access_token;
-  console.log('Token recibido en backend:', token);
+
 
   if (!token) return res.status(401).send('No token proporcionado');
 
@@ -145,9 +142,8 @@ app.get('/top-artists-short', async (req, res) => {
 
 
 // Obtener las canciones más escuchadas del usuario del medium term
-app.get('/top-tracks-med', async (req, res) => {
+app.get('/tracks-medium', async (req, res) => {
   const token = req.headers.authorization?.split(' ')[1] || req.query.access_token;
-  console.log('Token recibido en backend:', token);
 
   if (!token) return res.status(401).send('No token proporcionado');
 
@@ -167,9 +163,8 @@ app.get('/top-tracks-med', async (req, res) => {
 });
 
 // Obtener los artistas más escuchados del usuario del medium term
-app.get('/top-artists-med', async (req, res) => {
+app.get('/artists-medium', async (req, res) => {
   const token = req.headers.authorization?.split(' ')[1] || req.query.access_token;
-  console.log('Token recibido en backend:', token);
 
   if (!token) return res.status(401).send('No token proporcionado');
 

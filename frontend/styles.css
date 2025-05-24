@@ -38,7 +38,7 @@ footer{
 
 
 
-.top-artists, .top-songs, .top-artists-med, .top-songs-med{
+.artists-short, .tracks-short, .artists-medium, .tracks-medium{
     margin-left: 10px;
     margin-right: 10px;
     display: column;
